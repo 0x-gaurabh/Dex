@@ -41,7 +41,7 @@ const Swap = () => {
 
   const approveTokens = async (tokenContract:Contract, spender:string, amount:bigint) => {
     const tx = await tokenContract.approve(spender, amount);
-    await tx.wait(); // Wait for the transaction to be mined
+    await tx.wait(); 
     toast.warn('Waiting for swap approval', {
       position: "top-center",
       autoClose: 2000,
@@ -56,7 +56,7 @@ const Swap = () => {
 
   const swapTokens = async (dexContract:Contract, tokenIn:string, tokenOut: string, amountIn:bigint) => {
     const tx = await dexContract.swap(tokenIn, tokenOut, amountIn);
-    await tx.wait(); // Wait for the transaction to be mined
+    await tx.wait(); 
     toast.success('Swap succesfull', {
       position: "top-center",
       autoClose: 2000,
@@ -86,7 +86,7 @@ const Swap = () => {
     const abi = Dexabi;
     const contractIns = new ethers.Contract(contractadd, abi, signer);
   
-    // Use the addresses from the state, not hardcoded values
+    
     const tokenIn = fromToken.address;
     const tokenOut = toToken.address;
 
@@ -119,7 +119,7 @@ const Swap = () => {
   
     try {
       await swapTokens(contractIns, tokenIn, tokenOut, amountIN);
-      // Refresh balances after successful swap
+      
       await getBalnce();
     } catch (error) {
       console.error("Swap failed:", error);
@@ -389,7 +389,10 @@ const Swap = () => {
 
   }
   useEffect(() =>{
-    getBalnce();
+    if(address) {
+
+      getBalnce();
+    }
   },[address])
 
 
@@ -414,7 +417,6 @@ const Swap = () => {
         const reserveIn = await contractINS.getReserve(tokenIn);
         const reserveOut = await contractINS.getReserve(tokenOut);
         
-        // Add await here and format the output
         const amountOUT = await contractINS.getAmountOut(amountIN, reserveIn, reserveOut);
         const formattedAmount = parseFloat(ethers.formatUnits(amountOUT, 18)).toFixed(2);
         
